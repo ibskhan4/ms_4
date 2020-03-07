@@ -1,0 +1,70 @@
+---
+title: "ms_4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+library(tidyverse)
+library(janitor)  
+library(gt)
+library(dplyr)
+library(rvest)
+```
+
+Below is the data I have scraped from my sources. The first dataset I retrieved 
+is from WBEZ Chicago, which comprises data including school closings, openings, 
+and the number of students who were displaced from 2002 to 2018. From this, I 
+was able to extract two tables which I regard to be very relevant, one being 
+a table listing all the schools which have closed throughout the years, and 
+then a table of the number of impacted students at the various high schools. I
+then found another data set from Chicago Tribune which lists every single 
+school that faced budget cuts, as well as how much their budget increased or 
+was slashed. I'll either try to find some way to indicate this on the map I am
+conjuring in my mind currently, or perhaps construct an additional graph. 
+
+I've also found a research report by the name of "When Schools Close: Effects 
+on Displaced Students in Chicago Public Schools." This research report contains
+numerous graphs and charts, with data such as tables of school closings and
+the reasons for doing so (e.g. poor academics, underutilization). I think this
+is enlightening new data I could use to color my maps even further. This is 
+in a PDF format, so I'm wondering how best to scrape the data. I may have
+to recreate the data in a table and use it then, as to the extent of my
+knowledge I cannot scrape it since data isn't on a webpage. At the moment,
+I am still considering an animated map, but with so much data I am trying
+to configure how I will portray all the information. I am currently thinking of
+having two to three additional graphs, but I do want an animated map that would
+give a clear picture, as there is a very obfuscated understanding of the issue
+currently within the CPS system.
+
+Here are the links to my sources:
+
+https://interactive.wbez.org/generation-school-closings/
+
+https://docs.google.com/spreadsheets/u/1/d/e/2PACX-1vRmKox-lDNqhtUNL4WLl8x6DljIi3b0k1pYEmD7adfCwX-rGYyFw0XIjxNWkOfL6og3CHfUEHPMwv6k/pubhtml?urp=gmail_link#
+
+https://www.chicagotribune.com/news/ct-2016-cps-school-budget-cuts-table-htmlstory.html
+
+https://files.eric.ed.gov/fulltext/ED510792.pdf
+
+
+```{r}
+funds <- read_html("https://www.chicagotribune.com/news/ct-2016-cps-school-budget-cuts-table-htmlstory.html")
+tab <- funds %>% 
+  html_nodes("table")
+tab <- tab[1] %>% 
+  html_table 
+
+shakeups <- read_html("https://docs.google.com/spreadsheets/u/1/d/e/2PACX-1vRmKox-lDNqhtUNL4WLl8x6DljIi3b0k1pYEmD7adfCwX-rGYyFw0XIjxNWkOfL6og3CHfUEHPMwv6k/pubhtml?urp=gmail_link#")
+close <- shakeups %>% 
+  html_nodes("table")
+close <- close[1] %>% 
+  html_table 
+
+students <- shakeups %>% 
+  html_nodes("table")
+students <- students[3] %>% 
+  html_table
+```
+
